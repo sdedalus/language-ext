@@ -8,41 +8,14 @@ namespace LanguageExtTests
 	public class UnionTests
 	{
 		[Fact]
-		public void UnionTest1()
-		{
-			Union<string, int> x = "Test";
-
-			object value = null;
-
-			x.Match()
-				(a => value = a)
-				(b => value = b);
-
-			Assert.IsType<string>(value);
-		}
-
-		[Fact]
-		public void UnionTest2()
-		{
-			Union<string, int> x = 100;
-
-			object value = null;
-
-			x.Match()
-				(v => value = v)
-				(v => value = v);
-
-			Assert.IsType<int>(value);
-		}
-
-		[Fact]
 		public void UnionTest3()
 		{
 			Union<string, int> x = "Test";
 
-			string value = x.Match<string, int, string>()
-				(a => a)
-				(b => b.ToString());
+			string value = x.Match<string>()
+				.Where(a => a)
+				.Where(b => b.ToString())
+				.Else(() => "Nothing");
 
 			Assert.Equal("Test", value);
 		}
@@ -52,9 +25,10 @@ namespace LanguageExtTests
 		{
 			var x = new Union<string, int>(100);
 
-			string value = x.Match<string, int, string>()
-				(a => a)
-				(b => b.ToString());
+			string value = x.Match<string>()
+				.Where(a => a)
+				.Where(b => b.ToString())
+				.Else(() => "Nothing");
 
 			Assert.Equal("100", value);
 		}
@@ -64,9 +38,10 @@ namespace LanguageExtTests
 		{
 			var x = new Union<string, int>(100);
 
-			string value = x.Match<string, int, string>()
-				(a => a)
-				(b => b == 100 ? "Keeping It 100." : "Tea?");
+			string value = x.Match<string>()
+				.Where(a => a)
+				.Where(b => b == 100 ? "Keeping It 100." : "Tea?")
+				.Else(() => "Nothing");
 
 			Assert.Equal("Keeping It 100.", value);
 		}
@@ -75,9 +50,10 @@ namespace LanguageExtTests
 		public void UnionTest6()
 		{
 			string value = AOrB(true)
-				.Match<string, int, string>()
-				(a => a)
-				(b => b == 100 ? "Keeping It 100." : "Tea?");
+				.Match<string>()
+				.Where(a => a)
+				.Where(b => b == 100 ? "Keeping It 100." : "Tea?")
+				.Else(() => "Nothing");
 
 			Assert.Equal("Keeping It 100.", value);
 		}
@@ -86,9 +62,10 @@ namespace LanguageExtTests
 		public void UnionTest7()
 		{
 			string value = AOrB(false)
-				.Match<string, int, string>()
-				(a => a)
-				(b => b == 100 ? "Keeping It 100." : "Tea?");
+				.Match<string>()
+				.Where(a => a)
+				.Where(b => b == 100 ? "Keeping It 100." : "Tea?")
+				.Else(() => "Nothing");
 
 			Assert.Equal("test", value);
 		}
@@ -98,9 +75,10 @@ namespace LanguageExtTests
 		{
 			var x = Prelude.ToErrorUnion<int, UnauthorizedAccessException>(() => AOrError(false));
 			string value = x
-				.Match<int, UnauthorizedAccessException, string>()
-				(a => a.ToString())
-				(b => "test");
+				.Match<string>()
+				.Where(a => a.ToString())
+				.Where(b => "test")
+				.Else(() => "Nothing");
 
 			Assert.Equal("test", value);
 		}
@@ -134,10 +112,11 @@ namespace LanguageExtTests
 		{
 			Union<ItemType1, ItemType2, ItemType3> x = new ItemType3();
 
-			Assert.Equal("value3", x.Match<ItemType1, ItemType2, ItemType3, string>()
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value));
+			Assert.Equal("value3", x.Match<string>()
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Else(() => "Nothing"));
 		}
 
 		[Fact]
@@ -145,11 +124,12 @@ namespace LanguageExtTests
 		{
 			Union<ItemType1, ItemType2, ItemType3, ItemType4> x = new ItemType4();
 
-			Assert.Equal("value4", x.Match<ItemType1, ItemType2, ItemType3, ItemType4, string>()
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value));
+			Assert.Equal("value4", x.Match<string>()
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Else(() => "Nothing"));
 		}
 
 		[Fact]
@@ -157,12 +137,13 @@ namespace LanguageExtTests
 		{
 			Union<ItemType1, ItemType2, ItemType3, ItemType4, ItemType5> x = new ItemType5();
 
-			Assert.Equal("value5", x.Match<ItemType1, ItemType2, ItemType3, ItemType4, ItemType5, string>()
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value));
+			Assert.Equal("value5", x.Match<string>()
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Else(() => "Nothing"));
 		}
 
 		[Fact]
@@ -170,13 +151,14 @@ namespace LanguageExtTests
 		{
 			Union<ItemType1, ItemType2, ItemType3, ItemType4, ItemType5, ItemType6> x = new ItemType6();
 
-			Assert.Equal("value6", x.Match<ItemType1, ItemType2, ItemType3, ItemType4, ItemType5, ItemType6, string>()
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value));
+			Assert.Equal("value6", x.Match<string>()
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Else(() => "Nothing"));
 		}
 
 		[Fact]
@@ -184,14 +166,15 @@ namespace LanguageExtTests
 		{
 			Union<ItemType1, ItemType2, ItemType3, ItemType4, ItemType5, ItemType6, ItemType7> x = new ItemType7();
 
-			Assert.Equal("value7", x.Match<ItemType1, ItemType2, ItemType3, ItemType4, ItemType5, ItemType6, ItemType7, string>()
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value));
+			Assert.Equal("value7", x.Match<string>()
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Else(() => "Nothing"));
 		}
 
 		[Fact]
@@ -199,15 +182,16 @@ namespace LanguageExtTests
 		{
 			Union<ItemType1, ItemType2, ItemType3, ItemType4, ItemType5, ItemType6, ItemType7, ItemType8> x = new ItemType8();
 
-			Assert.Equal("value8", x.Match<ItemType1, ItemType2, ItemType3, ItemType4, ItemType5, ItemType6, ItemType7, ItemType8, string>()
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value)
-				(item => item.Value));
+			Assert.Equal("value8", x.Match<string>()
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Where(item => item.Value)
+				.Else(() => "Nothing"));
 		}
 
 		public class TestTypeBase
