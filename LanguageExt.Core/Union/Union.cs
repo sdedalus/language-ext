@@ -21,7 +21,7 @@ namespace LanguageExt
 			return new Union<T1>(item);
 		}
 
-		public IWhere1<T1, TReturn> Match<TReturn>() => new UnionMatch<T1, TReturn>(Value);
+		public IWith1<T1, TReturn> Match<TReturn>() => new UnionMatch<T1, TReturn>(Value);
 	}
 
 	public class Union<T1, T2> : IUnion
@@ -48,7 +48,7 @@ namespace LanguageExt
 			return new Union<T1, T2>(item);
 		}
 
-		public IWhere2<T1, T2, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, TReturn>(Value);
+		public IWith2<T1, T2, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, TReturn>(Value);
 	}
 
 	public class Union<T1, T2, T3> : IUnion
@@ -85,7 +85,7 @@ namespace LanguageExt
 			return new Union<T1, T2, T3>(item);
 		}
 
-		public IWhere3<T1, T2, T3, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, T3, TReturn>(Value);
+		public IWith3<T1, T2, T3, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, T3, TReturn>(Value);
 	}
 
 	public class Union<T1, T2, T3, T4> : IUnion
@@ -132,7 +132,7 @@ namespace LanguageExt
 			return new Union<T1, T2, T3, T4>(item);
 		}
 
-		public IWhere4<T1, T2, T3, T4, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, T3, T4, TReturn>(Value);
+		public IWith4<T1, T2, T3, T4, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, T3, T4, TReturn>(Value);
 	}
 
 	public class Union<T1, T2, T3, T4, T5> : IUnion
@@ -189,7 +189,7 @@ namespace LanguageExt
 			return new Union<T1, T2, T3, T4, T5>(item);
 		}
 
-		public IWhere5<T1, T2, T3, T4, T5, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, T3, T4, T5, TReturn>(Value);
+		public IWith5<T1, T2, T3, T4, T5, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, T3, T4, T5, TReturn>(Value);
 	}
 
 	public class Union<T1, T2, T3, T4, T5, T6> : IUnion
@@ -256,7 +256,7 @@ namespace LanguageExt
 			return new Union<T1, T2, T3, T4, T5, T6>(item);
 		}
 
-		public IWhere6<T1, T2, T3, T4, T5, T6, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, T3, T4, T5, T6, TReturn>(Value);
+		public IWith6<T1, T2, T3, T4, T5, T6, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, T3, T4, T5, T6, TReturn>(Value);
 	}
 
 	public class Union<T1, T2, T3, T4, T5, T6, T7> : IUnion
@@ -333,7 +333,7 @@ namespace LanguageExt
 			return new Union<T1, T2, T3, T4, T5, T6, T7>(item);
 		}
 
-		public IWhere7<T1, T2, T3, T4, T5, T6, T7, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, T3, T4, T5, T6, T7, TReturn>(Value);
+		public IWith7<T1, T2, T3, T4, T5, T6, T7, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, T3, T4, T5, T6, T7, TReturn>(Value);
 	}
 
 	public class Union<T1, T2, T3, T4, T5, T6, T7, T8> : IUnion
@@ -420,6 +420,6 @@ namespace LanguageExt
 			return new Union<T1, T2, T3, T4, T5, T6, T7, T8>(item);
 		}
 
-		public IWhere8<T1, T2, T3, T4, T5, T6, T7, T8, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, T3, T4, T5, T6, T7, T8, TReturn>(Value);
+		public IWith8<T1, T2, T3, T4, T5, T6, T7, T8, TReturn> Match<TReturn>() => new UnionMatch<T1, T2, T3, T4, T5, T6, T7, T8, TReturn>(Value);
 	}
 }

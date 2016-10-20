@@ -13,8 +13,8 @@ namespace LanguageExtTests
 			Union<string, int> x = "Test";
 
 			string value = x.Match<string>()
-				.Where(a => a)
-				.Where(b => b.ToString())
+				.With(a => a)
+				.With(b => b.ToString())
 				.Else(() => "Nothing");
 
 			Assert.Equal("Test", value);
@@ -26,8 +26,8 @@ namespace LanguageExtTests
 			var x = new Union<string, int>(100);
 
 			string value = x.Match<string>()
-				.Where(a => a)
-				.Where(b => b.ToString())
+				.With(a => a)
+				.With(b => b.ToString())
 				.Else(() => "Nothing");
 
 			Assert.Equal("100", value);
@@ -39,12 +39,31 @@ namespace LanguageExtTests
 			var x = new Union<string, int>(100);
 
 			string value = x.Match<string>()
-				.Where(v => v)
-				.Where(c => c == 100, v => "Keeping It 100.")
-				.Where(v => "Tea?")
+				.With(v => v)
+				.With(c => c == 100, v => "Keeping It 100.")
+				.With(v => "Tea?")
 				.Else(() => "Nothing");
 
 			Assert.Equal("Keeping It 100.", value);
+		}
+
+		[Fact]
+		public void UnionTest5Depth()
+		{
+			var x = new Union<string, Union<string, Union<string>>>(new Union<string, Union<string>>(new Union<string>("Test")));
+
+			string value = x.Match<string>()
+				.With(v => v)
+				.With(v => v
+					.Match<string>()
+						.With(b => "Not This")
+						.With(c => c.Match<string>()
+						   .With(d => d) // this is the match
+						   .Else(() => "Not This"))
+						.Else(() => "Not This"))
+				.Else(() => "Not This");
+
+			Assert.Equal("Test", value);
 		}
 
 		[Fact]
@@ -52,9 +71,9 @@ namespace LanguageExtTests
 		{
 			string value = AOrB(true)
 				.Match<string>()
-				.Where(v => v)
-				.Where(c => c == 100, v => "Keeping It 100.")
-				.Where(v => "Tea?")
+				.With(v => v)
+				.With(c => c == 100, v => "Keeping It 100.")
+				.With(v => "Tea?")
 				.Else(() => "Nothing");
 
 			Assert.Equal("Keeping It 100.", value);
@@ -65,8 +84,8 @@ namespace LanguageExtTests
 		{
 			string value = AOrB(false)
 				.Match<string>()
-				.Where(a => a)
-				.Where(b => b == 100 ? "Keeping It 100." : "Tea?")
+				.With(a => a)
+				.With(b => b == 100 ? "Keeping It 100." : "Tea?")
 				.Else(() => "Nothing");
 
 			Assert.Equal("test", value);
@@ -78,8 +97,8 @@ namespace LanguageExtTests
 			var x = Prelude.ToErrorUnion<int, UnauthorizedAccessException>(() => AOrError(false));
 			string value = x
 				.Match<string>()
-				.Where(a => a.ToString())
-				.Where(b => "test")
+				.With(a => a.ToString())
+				.With(b => "test")
 				.Else(() => "Nothing");
 
 			Assert.Equal("test", value);
@@ -115,9 +134,9 @@ namespace LanguageExtTests
 			Union<ItemType1, ItemType2, ItemType3> x = new ItemType3();
 
 			Assert.Equal("value3", x.Match<string>()
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
 				.Else(() => "Nothing"));
 		}
 
@@ -127,10 +146,10 @@ namespace LanguageExtTests
 			Union<ItemType1, ItemType2, ItemType3, ItemType4> x = new ItemType4();
 
 			Assert.Equal("value4", x.Match<string>()
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
 				.Else(() => "Nothing"));
 		}
 
@@ -140,11 +159,11 @@ namespace LanguageExtTests
 			Union<ItemType1, ItemType2, ItemType3, ItemType4, ItemType5> x = new ItemType5();
 
 			Assert.Equal("value5", x.Match<string>()
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
 				.Else(() => "Nothing"));
 		}
 
@@ -154,12 +173,12 @@ namespace LanguageExtTests
 			Union<ItemType1, ItemType2, ItemType3, ItemType4, ItemType5, ItemType6> x = new ItemType6();
 
 			Assert.Equal("value6", x.Match<string>()
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
 				.Else(() => "Nothing"));
 		}
 
@@ -169,13 +188,13 @@ namespace LanguageExtTests
 			Union<ItemType1, ItemType2, ItemType3, ItemType4, ItemType5, ItemType6, ItemType7> x = new ItemType7();
 
 			Assert.Equal("value7", x.Match<string>()
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
 				.Else(() => "Nothing"));
 		}
 
@@ -185,14 +204,14 @@ namespace LanguageExtTests
 			Union<ItemType1, ItemType2, ItemType3, ItemType4, ItemType5, ItemType6, ItemType7, ItemType8> x = new ItemType8();
 
 			Assert.Equal("value8", x.Match<string>()
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
-				.Where(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
+				.With(item => item.Value)
 				.Else(() => "Nothing"));
 		}
 
