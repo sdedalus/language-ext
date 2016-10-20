@@ -10,41 +10,57 @@ namespace LanguageExt
 	public interface IWhere1<T1, TReturn>
 	{
 		IElse<TReturn> Where(Func<T1, TReturn> func);
+
+		IWhere1<T1, TReturn> Where(Func<T1, bool> condition, Func<T1, TReturn> func);
 	}
 
 	public interface IWhere2<T1, T2, TReturn>
 	{
 		IWhere1<T2, TReturn> Where(Func<T1, TReturn> func);
+
+		IWhere2<T1, T2, TReturn> Where(Func<T1, bool> condition, Func<T1, TReturn> func);
 	}
 
 	public interface IWhere3<T1, T2, T3, TReturn>
 	{
 		IWhere2<T2, T3, TReturn> Where(Func<T1, TReturn> func);
+
+		IWhere3<T1, T2, T3, TReturn> Where(Func<T1, bool> condition, Func<T1, TReturn> func);
 	}
 
 	public interface IWhere4<T1, T2, T3, T4, TReturn>
 	{
 		IWhere3<T2, T3, T4, TReturn> Where(Func<T1, TReturn> func);
+
+		IWhere4<T1, T2, T3, T4, TReturn> Where(Func<T1, bool> condition, Func<T1, TReturn> func);
 	}
 
 	public interface IWhere5<T1, T2, T3, T4, T5, TReturn>
 	{
 		IWhere4<T2, T3, T4, T5, TReturn> Where(Func<T1, TReturn> func);
+
+		IWhere5<T1, T2, T3, T4, T5, TReturn> Where(Func<T1, bool> condition, Func<T1, TReturn> func);
 	}
 
 	public interface IWhere6<T1, T2, T3, T4, T5, T6, TReturn>
 	{
 		IWhere5<T2, T3, T4, T5, T6, TReturn> Where(Func<T1, TReturn> func);
+
+		IWhere6<T1, T2, T3, T4, T5, T6, TReturn> Where(Func<T1, bool> condition, Func<T1, TReturn> func);
 	}
 
 	public interface IWhere7<T1, T2, T3, T4, T5, T6, T7, TReturn>
 	{
 		IWhere6<T2, T3, T4, T5, T6, T7, TReturn> Where(Func<T1, TReturn> func);
+
+		IWhere7<T1, T2, T3, T4, T5, T6, T7, TReturn> Where(Func<T1, bool> condition, Func<T1, TReturn> func);
 	}
 
 	public interface IWhere8<T1, T2, T3, T4, T5, T6, T7, T8, TReturn>
 	{
 		IWhere7<T2, T3, T4, T5, T6, T7, T8, TReturn> Where(Func<T1, TReturn> func);
+
+		IWhere8<T1, T2, T3, T4, T5, T6, T7, T8, TReturn> Where(Func<T1, bool> condition, Func<T1, TReturn> func);
 	}
 
 	public class UnionMatchBase<TReturn> : IElse<TReturn>
@@ -60,7 +76,18 @@ namespace LanguageExt
 
 		internal Unit SetReturnIfMatch<T>(Func<T, TReturn> func)
 		{
-			if (value.Item1 == typeof(T))
+			if (!matched && value.Item1 == typeof(T))
+			{
+				returnValue = func((T)value.Item2);
+				matched = true;
+			}
+
+			return Unit.Default;
+		}
+
+		internal Unit SetReturnIfMatch<T>(Func<T, bool> condition, Func<T, TReturn> func)
+		{
+			if (!matched && value.Item1 == typeof(T) && condition((T)value.Item2))
 			{
 				returnValue = func((T)value.Item2);
 				matched = true;
@@ -84,6 +111,9 @@ namespace LanguageExt
 		}
 
 		IElse<TReturn> IWhere1<T1, TReturn>.Where(Func<T1, TReturn> func) => SetReturnIfMatch(func).Return(this);
+
+		IWhere1<T1, TReturn> IWhere1<T1, TReturn>.Where(Func<T1, bool> condition, Func<T1, TReturn> func)
+		=> SetReturnIfMatch(condition, func).Return(this);
 	}
 
 	public class UnionMatch<T2, T1, TReturn> :
@@ -99,6 +129,12 @@ namespace LanguageExt
 
 		IWhere1<T1, TReturn> IWhere2<T2, T1, TReturn>.Where(Func<T2, TReturn> func) =>
 			SetReturnIfMatch(func).Return(this);
+
+		IWhere1<T1, TReturn> IWhere1<T1, TReturn>.Where(Func<T1, bool> condition, Func<T1, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere2<T2, T1, TReturn> IWhere2<T2, T1, TReturn>.Where(Func<T2, bool> condition, Func<T2, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
 	}
 
 	public class UnionMatch<T3, T2, T1, TReturn> :
@@ -118,6 +154,15 @@ namespace LanguageExt
 
 		IWhere2<T2, T1, TReturn> IWhere3<T3, T2, T1, TReturn>.Where(Func<T3, TReturn> func) =>
 			SetReturnIfMatch(func).Return(this);
+
+		IWhere1<T1, TReturn> IWhere1<T1, TReturn>.Where(Func<T1, bool> condition, Func<T1, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere2<T2, T1, TReturn> IWhere2<T2, T1, TReturn>.Where(Func<T2, bool> condition, Func<T2, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere3<T3, T2, T1, TReturn> IWhere3<T3, T2, T1, TReturn>.Where(Func<T3, bool> condition, Func<T3, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
 	}
 
 	public class UnionMatch<T4, T3, T2, T1, TReturn> :
@@ -141,6 +186,18 @@ namespace LanguageExt
 
 		IWhere3<T3, T2, T1, TReturn> IWhere4<T4, T3, T2, T1, TReturn>.Where(Func<T4, TReturn> func) =>
 			SetReturnIfMatch(func).Return(this);
+
+		IWhere1<T1, TReturn> IWhere1<T1, TReturn>.Where(Func<T1, bool> condition, Func<T1, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere2<T2, T1, TReturn> IWhere2<T2, T1, TReturn>.Where(Func<T2, bool> condition, Func<T2, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere3<T3, T2, T1, TReturn> IWhere3<T3, T2, T1, TReturn>.Where(Func<T3, bool> condition, Func<T3, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere4<T4, T3, T2, T1, TReturn> IWhere4<T4, T3, T2, T1, TReturn>.Where(Func<T4, bool> condition, Func<T4, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
 	}
 
 	public class UnionMatch<T5, T4, T3, T2, T1, TReturn> :
@@ -168,6 +225,21 @@ namespace LanguageExt
 
 		IWhere4<T4, T3, T2, T1, TReturn> IWhere5<T5, T4, T3, T2, T1, TReturn>.Where(Func<T5, TReturn> func) =>
 			SetReturnIfMatch(func).Return(this);
+
+		IWhere2<T2, T1, TReturn> IWhere2<T2, T1, TReturn>.Where(Func<T2, bool> condition, Func<T2, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere1<T1, TReturn> IWhere1<T1, TReturn>.Where(Func<T1, bool> condition, Func<T1, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere3<T3, T2, T1, TReturn> IWhere3<T3, T2, T1, TReturn>.Where(Func<T3, bool> condition, Func<T3, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere4<T4, T3, T2, T1, TReturn> IWhere4<T4, T3, T2, T1, TReturn>.Where(Func<T4, bool> condition, Func<T4, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere5<T5, T4, T3, T2, T1, TReturn> IWhere5<T5, T4, T3, T2, T1, TReturn>.Where(Func<T5, bool> condition, Func<T5, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
 	}
 
 	public class UnionMatch<T6, T5, T4, T3, T2, T1, TReturn> :
@@ -199,6 +271,24 @@ namespace LanguageExt
 
 		IWhere5<T5, T4, T3, T2, T1, TReturn> IWhere6<T6, T5, T4, T3, T2, T1, TReturn>.Where(Func<T6, TReturn> func) =>
 			SetReturnIfMatch(func).Return(this);
+
+		IWhere4<T4, T3, T2, T1, TReturn> IWhere4<T4, T3, T2, T1, TReturn>.Where(Func<T4, bool> condition, Func<T4, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere6<T6, T5, T4, T3, T2, T1, TReturn> IWhere6<T6, T5, T4, T3, T2, T1, TReturn>.Where(Func<T6, bool> condition, Func<T6, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere5<T5, T4, T3, T2, T1, TReturn> IWhere5<T5, T4, T3, T2, T1, TReturn>.Where(Func<T5, bool> condition, Func<T5, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere3<T3, T2, T1, TReturn> IWhere3<T3, T2, T1, TReturn>.Where(Func<T3, bool> condition, Func<T3, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere2<T2, T1, TReturn> IWhere2<T2, T1, TReturn>.Where(Func<T2, bool> condition, Func<T2, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere1<T1, TReturn> IWhere1<T1, TReturn>.Where(Func<T1, bool> condition, Func<T1, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
 	}
 
 	public class UnionMatch<T7, T6, T5, T4, T3, T2, T1, TReturn> :
@@ -234,6 +324,27 @@ namespace LanguageExt
 
 		IWhere6<T6, T5, T4, T3, T2, T1, TReturn> IWhere7<T7, T6, T5, T4, T3, T2, T1, TReturn>.Where(Func<T7, TReturn> func) =>
 			SetReturnIfMatch(func).Return(this);
+
+		IWhere5<T5, T4, T3, T2, T1, TReturn> IWhere5<T5, T4, T3, T2, T1, TReturn>.Where(Func<T5, bool> condition, Func<T5, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere6<T6, T5, T4, T3, T2, T1, TReturn> IWhere6<T6, T5, T4, T3, T2, T1, TReturn>.Where(Func<T6, bool> condition, Func<T6, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere7<T7, T6, T5, T4, T3, T2, T1, TReturn> IWhere7<T7, T6, T5, T4, T3, T2, T1, TReturn>.Where(Func<T7, bool> condition, Func<T7, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere4<T4, T3, T2, T1, TReturn> IWhere4<T4, T3, T2, T1, TReturn>.Where(Func<T4, bool> condition, Func<T4, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere3<T3, T2, T1, TReturn> IWhere3<T3, T2, T1, TReturn>.Where(Func<T3, bool> condition, Func<T3, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere2<T2, T1, TReturn> IWhere2<T2, T1, TReturn>.Where(Func<T2, bool> condition, Func<T2, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere1<T1, TReturn> IWhere1<T1, TReturn>.Where(Func<T1, bool> condition, Func<T1, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
 	}
 
 	public class UnionMatch<T8, T7, T6, T5, T4, T3, T2, T1, TReturn> :
@@ -273,5 +384,29 @@ namespace LanguageExt
 
 		IWhere7<T7, T6, T5, T4, T3, T2, T1, TReturn> IWhere8<T8, T7, T6, T5, T4, T3, T2, T1, TReturn>.Where(Func<T8, TReturn> func) =>
 			SetReturnIfMatch(func).Return(this);
+
+		IWhere5<T5, T4, T3, T2, T1, TReturn> IWhere5<T5, T4, T3, T2, T1, TReturn>.Where(Func<T5, bool> condition, Func<T5, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere6<T6, T5, T4, T3, T2, T1, TReturn> IWhere6<T6, T5, T4, T3, T2, T1, TReturn>.Where(Func<T6, bool> condition, Func<T6, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere8<T8, T7, T6, T5, T4, T3, T2, T1, TReturn> IWhere8<T8, T7, T6, T5, T4, T3, T2, T1, TReturn>.Where(Func<T8, bool> condition, Func<T8, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere7<T7, T6, T5, T4, T3, T2, T1, TReturn> IWhere7<T7, T6, T5, T4, T3, T2, T1, TReturn>.Where(Func<T7, bool> condition, Func<T7, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere3<T3, T2, T1, TReturn> IWhere3<T3, T2, T1, TReturn>.Where(Func<T3, bool> condition, Func<T3, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere4<T4, T3, T2, T1, TReturn> IWhere4<T4, T3, T2, T1, TReturn>.Where(Func<T4, bool> condition, Func<T4, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere2<T2, T1, TReturn> IWhere2<T2, T1, TReturn>.Where(Func<T2, bool> condition, Func<T2, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
+
+		IWhere1<T1, TReturn> IWhere1<T1, TReturn>.Where(Func<T1, bool> condition, Func<T1, TReturn> func) =>
+			SetReturnIfMatch(condition, func).Return(this);
 	}
 }

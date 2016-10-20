@@ -39,8 +39,9 @@ namespace LanguageExtTests
 			var x = new Union<string, int>(100);
 
 			string value = x.Match<string>()
-				.Where(a => a)
-				.Where(b => b == 100 ? "Keeping It 100." : "Tea?")
+				.Where(v => v)
+				.Where(c => c == 100, v => "Keeping It 100.")
+				.Where(v => "Tea?")
 				.Else(() => "Nothing");
 
 			Assert.Equal("Keeping It 100.", value);
@@ -51,8 +52,9 @@ namespace LanguageExtTests
 		{
 			string value = AOrB(true)
 				.Match<string>()
-				.Where(a => a)
-				.Where(b => b == 100 ? "Keeping It 100." : "Tea?")
+				.Where(v => v)
+				.Where(c => c == 100, v => "Keeping It 100.")
+				.Where(v => "Tea?")
 				.Else(() => "Nothing");
 
 			Assert.Equal("Keeping It 100.", value);

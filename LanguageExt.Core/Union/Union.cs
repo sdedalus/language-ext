@@ -7,46 +7,6 @@ namespace LanguageExt
 	{
 	}
 
-	public interface IUnion<T1>
-	{
-		Tuple<Option<T1>> InternalValue();
-	}
-
-	public interface IUnion<T1, T2> : IUnion
-	{
-		Tuple<Option<T1>, Option<T2>> InternalValue();
-	}
-
-	public interface IUnion<T1, T2, T3> : IUnion
-	{
-		Tuple<Option<T1>, Option<T2>, Option<T3>> InternalValue();
-	}
-
-	public interface IUnion<T1, T2, T3, T4> : IUnion
-	{
-		Tuple<Option<T1>, Option<T2>, Option<T3>, Option<T4>> InternalValue();
-	}
-
-	public interface IUnion<T1, T2, T3, T4, T5> : IUnion
-	{
-		Tuple<Option<T1>, Option<T2>, Option<T3>, Option<T4>, Option<T5>> InternalValue();
-	}
-
-	public interface IUnion<T1, T2, T3, T4, T5, T6> : IUnion
-	{
-		Tuple<Option<T1>, Option<T2>, Option<T3>, Option<T4>, Option<T5>, Option<T6>> InternalValue();
-	}
-
-	public interface IUnion<T1, T2, T3, T4, T5, T6, T7> : IUnion
-	{
-		Tuple<Option<T1>, Option<T2>, Option<T3>, Option<T4>, Option<T5>, Option<T6>, Option<T7>> InternalValue();
-	}
-
-	public interface IUnion<T1, T2, T3, T4, T5, T6, T7, T8> : IUnion
-	{
-		Tuple<Option<T1>, Option<T2>, Option<T3>, Option<T4>, Option<T5>, Option<T6>, Option<T7>, Tuple<Option<T8>>> InternalValue();
-	}
-
 	public class Union<T1> : IUnion
 	{
 		private readonly Tuple<Type, Object> Value;
